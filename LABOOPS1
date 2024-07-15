@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Quiz Application</h1>
+        <div id="question-container"></div>
+        <button id="submit-btn" onclick="submitQuiz()">Submit</button>
+        <div id="result-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+#quiz-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#question-container {
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 15px;
+}
+
+.question h2 {
+    margin: 0 0 10px 0;
+}
+
+.options {
+    list-style-type: none;
+    padding: 0;
+}
+
+.options li {
+    margin-bottom: 10px;
+}
+
+#result-container {
+    margin-top: 20px;
+    display: none;
+}
+const questions = [
+    {
+        question: "What is the capital of France?",
+        options: ["Berlin", "Madrid", "Paris", "Lisbon"],
+        answer: "Paris"
+    },
+    {
+        question: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        answer: "4"
+    },
+    {
+        question: "Who wrote 'To Kill a Mockingbird'?",
+        options: ["Harper Lee", "Mark Twain", "J.K. Rowling", "Ernest Hemingway"],
+        answer: "Harper Lee"
+    }
+];
+
+let score = 0;
+
+window.onload = function() {
+    displayQuestions();
+}
+
+function displayQuestions() {
+    const questionContainer = document.getElementById('question-container');
+    questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+
+        const questionTitle = document.createElement('h2');
+        questionTitle.textContent = `Q${index + 1}: ${q.question}`;
+        questionDiv.appendChild(questionTitle);
+
+        const optionsList = document.createElement('ul');
+        optionsList.classList.add('options');
+
+        q.options.forEach(option => {
+            const optionItem = document.createElement('li');
+            const optionInput = document.createElement('input');
+            optionInput.type = 'radio';
+            optionInput.name = `question${index}`;
+            optionInput.value = option;
+
+            const optionLabel = document.createElement('label');
+            optionLabel.textContent = option;
+
+            optionItem.appendChild(optionInput);
+            optionItem.appendChild(optionLabel);
+            optionsList.appendChild(optionItem);
+        });
+
+        questionDiv.appendChild(optionsList);
+        questionContainer.appendChild(questionDiv);
+    });
+}
+
+function submitQuiz() {
+    questions.forEach((q, index) => {
+        const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+        if (selectedOption && selectedOption.value === q.answer) {
+            score++;
+        }
+    });
+
+    displayResult();
+}
+
+function displayResult() {
+    const resultContainer = document.getElementById('result-container');
+    const totalQuestions = questions.length;
+    const percentage = (score / totalQuestions) * 100;
+
+    resultContainer.innerHTML = `
+        <h2>Your Score: ${score}/${totalQuestions}</h2>
+        <p>Percentage: ${percentage}%</p>
+    `;
+    resultContainer.style.display = 'block';
+}
